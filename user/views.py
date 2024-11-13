@@ -16,6 +16,8 @@ class UserCreateView(generics.CreateAPIView):
     queryset = Member.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+    
+    
 
      # Create a token for the new user
 
@@ -23,6 +25,10 @@ class UserCreateView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        
+        user.is_active=True
+        user.save()
+        
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({
